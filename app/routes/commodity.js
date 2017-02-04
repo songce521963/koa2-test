@@ -31,19 +31,44 @@ router
         ctx.body = commodity
     })
     .post('/', async(ctx) => {
-        ctx.body = await Commodity.create(ctx.request.body)
+        let dataString = ctx.request.body.images
+        if (dataString.length > 0) {
+            let matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/)
+
+            let type = matches[1].replace(/^image\//, '');
+            let dataBuffer = new Buffer(matches[2], 'base64'); //base64解码  
+            let newPath = path.join('public/upload', parseInt(Math.random() * 100) + Date.parse(new Date()).toString() + '.' + type);
+            fs.writeFile(newPath, dataBuffer, err => {
+                if (err) throw err
+            });
+
+            ctx.request.body.picture = newPath.replace(/^public/, '')
+        }
+
+        const commodity = await Commodity.create(ctx.request.body)
+        ctx.body = commodity
     })
     .put('/:id', async(ctx) => {
-        await Commodity.update(ctx.request.body, {
+        let dataString = ctx.request.body.images
+        if (dataString.length > 0) {
+            let matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/)
+
+            let type = matches[1].replace(/^image\//, '');
+            let dataBuffer = new Buffer(matches[2], 'base64'); //base64解码  
+            let newPath = path.join('public/upload', parseInt(Math.random() * 100) + Date.parse(new Date()).toString() + '.' + type);
+            fs.writeFile(newPath, dataBuffer, err => {
+                if (err) throw err
+            });
+
+            ctx.request.body.picture = newPath.replace(/^public/, '')
+        }
+
+        const commodity = await Commodity.update(ctx.request.body, {
             where: {
                 id: ctx.id
             }
         })
-        ctx.body = await Commodity.find({
-            where: {
-                id: ctx.id
-            }
-        })
+        ctx.body = commodity
     })
     .del('/:id', async(ctx) => {
         await Commodity.destroy({
