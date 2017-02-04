@@ -1,12 +1,9 @@
 import fs from 'fs'
 import path from 'path'
-import Sequelize from 'sequelize'
-import config from '../config/DBConfig.json'
+import sequelize from '../sequelize/sqlite.js'
 
 const basename  = path.basename(module.filename)
 const db = {}
-
-const sequelize = new Sequelize('test', 'root', 'x5', { dialect: 'mysql'})
 
 fs
   .readdirSync(__dirname)
@@ -18,11 +15,6 @@ fs
     db[model.name] = model;
   })
 
-/*Object.keys(db).forEach(function(modelName) {
-  if (db[modelName].associate) {
-    db[modelName].associate(db)
-  }
-})*/
 sequelize.sync()
 
 db.sequelize = sequelize
