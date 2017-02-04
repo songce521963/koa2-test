@@ -1,6 +1,6 @@
 # koa2-test
 
-koa2 sequelize
+vue2.0 koa2 sequelize sqlite
 
 cnpm install
 
